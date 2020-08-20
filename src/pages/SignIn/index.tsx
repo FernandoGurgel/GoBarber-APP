@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import {
   Image,
   KeyboardAvoidingView,
   View,
   ScrollView,
   Platform,
-  Keyboard,
 } from 'react-native'
 import Icon from 'react-native-vector-icons/Feather'
+
+import { useNavigation } from '@react-navigation/native'
 
 import Button from '../../components/Button'
 import Input from '../../components/Input'
@@ -22,28 +23,8 @@ import {
   CreateAccountButtonText,
 } from './styles'
 
-const SingIn: React.FC = () => {
-  const [keyboardVisible, setKeyboardVisible] = useState()
-
-  useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      () => {
-        setKeyboardVisible(true) // or some other action
-      },
-    )
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      () => {
-        setKeyboardVisible(false) // or some other action
-      },
-    )
-
-    return () => {
-      keyboardDidHideListener.remove()
-      keyboardDidShowListener.remove()
-    }
-  }, [])
+const SignIn: React.FC = () => {
+  const navigation = useNavigation()
 
   return (
     <>
@@ -71,17 +52,21 @@ const SingIn: React.FC = () => {
             >
               Entrar
             </Button>
-            <ForgotPassword onPress={() => {}}>
+            <ForgotPassword
+              onPress={() => {
+                console.log('s')
+              }}
+            >
               <ForgotPasswordText> Esqueci minha senha </ForgotPasswordText>
             </ForgotPassword>
           </Container>
         </ScrollView>
       </KeyboardAvoidingView>
-      <CreateAccountButton onPress={() => {}}>
+      <CreateAccountButton onPress={() => navigation.navigate('SingUp')}>
         <Icon name="log-in" size={20} color="#ff9000" />
         <CreateAccountButtonText>Criar uma conta</CreateAccountButtonText>
       </CreateAccountButton>
     </>
   )
 }
-export default SingIn
+export default SignIn
