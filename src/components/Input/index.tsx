@@ -11,11 +11,7 @@ interface IInputProps extends TextInputProps {
 const Input: React.FC<IInputProps> = ({ icon, name, ...res }) => (
   <Container>
     <Icon name={icon} size={20} color="#666360" />
-    <TextInput
-      keyboardAppearance="dark"
-      placeholderTextColor="#666360"
-      {...res}
-    />
+    <TextInput keyboardAppearance="dark" placeholderTextColor="#666360" />
   </Container>
 )
 
