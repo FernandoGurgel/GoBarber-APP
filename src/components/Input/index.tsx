@@ -1,4 +1,9 @@
-import React, { useRef, useEffect } from 'react'
+import React, {
+  useRef,
+  useEffect,
+  useImperativeHandle,
+  forwardRef,
+} from 'react'
 import { TextInputProps } from 'react-native'
 import { useField } from '@unform/core'
 // import {} from '@unform/mobile'
@@ -14,10 +19,23 @@ interface IInputValueReference {
   value: string
 }
 
-const Input: React.FC<IInputProps> = ({ icon, name, ...rest }) => {
+interface IInpuRef {
+  focus(): void
+}
+
+const Input: React.RefForwardingComponent<IInpuRef, IInputProps> = (
+  { icon, name, ...rest },
+  ref,
+) => {
   const inputElementRef = useRef<any>(null)
   const { registerField, defaultValue = '', fieldName, error } = useField(name)
   const inputValueRef = useRef<IInputValueReference>({ value: defaultValue })
+
+  useImperativeHandle(ref, () => ({
+    focus() {
+      inputElementRef.current.focus()
+    },
+  }))
 
   useEffect(() => {
     registerField<string>({
@@ -52,4 +70,4 @@ const Input: React.FC<IInputProps> = ({ icon, name, ...rest }) => {
   )
 }
 
-export default Input
+export default forwardRef(Input)
