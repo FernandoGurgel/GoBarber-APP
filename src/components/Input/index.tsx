@@ -1,13 +1,13 @@
 import React, {
+  useState,
   useRef,
   useEffect,
   useImperativeHandle,
   forwardRef,
+  useCallback,
 } from 'react'
 import { TextInputProps } from 'react-native'
 import { useField } from '@unform/core'
-// import {} from '@unform/mobile'
-
 import { Container, TextInput, Icon } from './styles'
 
 interface IInputProps extends TextInputProps {
@@ -30,6 +30,17 @@ const Input: React.RefForwardingComponent<IInpuRef, IInputProps> = (
   const inputElementRef = useRef<any>(null)
   const { registerField, defaultValue = '', fieldName, error } = useField(name)
   const inputValueRef = useRef<IInputValueReference>({ value: defaultValue })
+  const [isFocused, setIsFocus] = useState(false)
+  const [isFilled, setIsFilled] = useState(false)
+
+  const handleInputFocus = useCallback(() => {
+    setIsFocus(true)
+  }, [])
+
+  const handleInputBlur = useCallback(() => {
+    setIsFocus(false)
+    setIsFilled(!!inputValueRef.current.value)
+  }, [])
 
   useImperativeHandle(ref, () => ({
     focus() {
@@ -54,12 +65,18 @@ const Input: React.RefForwardingComponent<IInpuRef, IInputProps> = (
   }, [fieldName, registerField])
 
   return (
-    <Container>
-      <Icon name={icon} size={20} color="#666360" />
+    <Container isFocused={isFocused}>
+      <Icon
+        name={icon}
+        size={20}
+        color={isFocused || isFilled ? '#ff9000' : '#666360'}
+      />
       <TextInput
         ref={inputElementRef}
         keyboardAppearance="dark"
         placeholderTextColor={'#666360'}
+        onFocus={handleInputFocus}
+        onBlur={handleInputBlur}
         defaultValue={defaultValue}
         onChangeText={value => {
           inputValueRef.current.value = value
